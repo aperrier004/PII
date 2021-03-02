@@ -5,7 +5,9 @@
 from PyTrack.Experiment import Experiment
 from PyTrack.formatBridge import generateCompatibleFormat
 
-generateCompatibleFormat(exp_path="C:/Users/Sebastien/PycharmProjects/PII/NTU_Experiment",
+# Sebastien : exp_path="C:/Users/Sebastien/PycharmProjects/PII/NTU_Experiment"
+
+generateCompatibleFormat(exp_path="F:/PII/NTU_Experiment",
                          device="eyelink",
                          stim_list_mode='NA',
                          eye='B',
@@ -15,8 +17,8 @@ generateCompatibleFormat(exp_path="C:/Users/Sebastien/PycharmProjects/PII/NTU_Ex
 print("1 is OK")
 
 # Creating an object of the Experiment class
-exp = Experiment(json_file="C:/Users/Sebastien/PycharmProjects/PII/NTU_Experiment/NTU_Experiment.json",
-                    csv_path="C:/Users/Sebastien/PycharmProjects/PII/NTU_Experiment/Data/csv_files",
+exp = Experiment(json_file="F:/PII/NTU_Experiment/NTU_Experiment.json",
+                    csv_path="F:/PII/NTU_Experiment/Data/csv_files",
                  reading_method="CSV")
 
 print("2 is OK")
