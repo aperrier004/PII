@@ -1,3 +1,6 @@
+###
+# Fichier de tests de tout et n'importe quoi
+###
 
 # For windows the path will look like
 #    a. exp_path="complete\\path\\to\\NTU_Experiment"
@@ -18,7 +21,7 @@ print("1 is OK")
 
 # Creating an object of the Experiment class
 exp = Experiment(json_file="F:/PII/NTU_Experiment/NTU_Experiment.json",
-                    csv_path="F:/PII/NTU_Experiment/Data/csv_files",
+                 csv_path="F:/PII/NTU_Experiment/Data/csv_files",
                  reading_method="CSV")
 
 print("2 is OK")

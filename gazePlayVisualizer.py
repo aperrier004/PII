@@ -1,3 +1,7 @@
+###
+# Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
+###
+
 import numpy as np
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat
@@ -13,45 +17,52 @@ matplotlib.use("TkAgg")
 
 LARGE_FONT = ("Verdana", 12)
 
-# Pour executer les données
-# function to convert data to generate csv file for data file recorded using EyeLink on both eyes and the stimulus name specified in the message section
+# Pour générer le fichier CSV des données
+generateCompatibleFormat(exp_path="F:/PII/Smi/smi_eyetracker_freeviewing.txt",
+                         device="smi",
+                         stim_list_mode='NA',
+                         start='12',
+                         stop='99'
+                         )
 
 # Device : smi
-# F:/PII/Smi/smi_eyetracker_freeviewing.txt
+# exp_path = "F:/PII/Smi/smi_eyetracker_freeviewing.txt"
 
-# generateCompatibleFormat(exp_path="F:/PII/Tobii/tobii_sceneviewing_eyetrack_ascii.txt",
-# device="tobii"  # ,
-# stim_list_mode='NA',
-# start='12',
-# stop='99'
-#  )
+# Device : tobii
+# exp_path = "F:/PII/Tobii/tobii_sceneviewing_eyetrack_ascii.txt"
 
 
-generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
+# Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
+# generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
 
-df = pd.read_csv("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.csv")
+# On read le CSV pour avoir les données
+# df pour smi
+df = pd.read_csv("F:/PII/Smi/smi_eyetracker_freeviewing.csv")
+
+# df pour JSON
+#df = pd.read_csv("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.csv")
 
 # A MODIFIER ??? en fonction de si c'est 16:9 ou 4:3
-
 # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
 sensor_dict = {
     "EyeTracker":
     {
         "Sampling_Freq": 1000,
-        "Display_width": 1080,
-        "Display_height": 1920,
-        "aoi": [0, 0, 1920, 1080]
+        "Display_width": 1280,
+        "Display_height": 1024,
+        "aoi": [390, 497, 759, 732]
     }
 }
 
-# Creating Stimulus object. See the documentation for advanced parameters.
-stim = Stimulus(path="F:/PII/GazePlay",
+# Creating Stimulus object
+# SMI : path = "F:/PII/Smi"
+# JSON : path = "F:/PII/GazePlay"
+stim = Stimulus(path="F:/PII/Smi",
                 data=df,
                 sensor_names=sensor_dict)
 
-# Some functionality usage. See documentation of Stimulus class for advanced use.
+# Some functionality usage
 # stim.findEyeMetaData()
-
 
 # Visualization of plots
 # stim.gazePlot(save_fig=True)
@@ -164,6 +175,7 @@ class PageThree(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
+        # On appelle la fonction gazePlot() pour créer une figure que l'on donne au canvas
         canvas = FigureCanvasTkAgg(stim.gazePlot(), self)
 
         # canvas.show()
@@ -185,6 +197,7 @@ class PageFour(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
+        # On appelle la fonction gazeHeatMap() pour créer une figure que l'on donne au canvas
         canvas = FigureCanvasTkAgg(stim.gazeHeatMap(), self)
 
         # canvas.show()
@@ -207,6 +220,7 @@ class PageFive(tk.Frame):
         button1.pack()
 
         # ERROR
+        # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
         #canvas = FigureCanvasTkAgg(stim.visualize(), self)
 
         # canvas.show()

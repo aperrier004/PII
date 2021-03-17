@@ -1,3 +1,6 @@
+###
+# Fichier de tests pour les fonctions de parsing
+###
 from readingJSON import read_json
 import numpy as np
 import pandas as pd

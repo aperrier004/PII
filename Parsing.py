@@ -1,3 +1,6 @@
+###
+# Fichier de fonction pour le parsing
+###
 import os
 import json
 

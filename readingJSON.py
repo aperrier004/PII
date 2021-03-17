@@ -1,3 +1,7 @@
+###
+# Fichier comportant des fonctions pour lire un fichier .JSON 
+#
+
 import os
 import json
 
