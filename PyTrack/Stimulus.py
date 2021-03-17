@@ -1101,7 +1101,7 @@ class Stimulus:
 		return tuple(inside_aoi)
 
 
-	def gazePlot(self, save_fig=False, show_fig=True, save_data=False):
+	def gazePlot(self, save_fig=False, show_fig=False, save_data=False):
 		"""Function to plot eye gaze with numbered fixations.
 
 		Internal function of class that uses its `data` member variable. Can be invoked by an object of the class.
@@ -1121,7 +1121,9 @@ class Stimulus:
 			return
 
 		fig = plt.figure()
-		fig.canvas.set_window_title("Gaze Plot: " + self.name)
+		#fig.canvas.set_window_title("Gaze Plot: " + self.name)
+		# modif
+		ax = fig.add_subplot(111)
 
 		try:
 			img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpg")
@@ -1176,6 +1178,8 @@ class Stimulus:
 		fixation_gaze_y = gaze_y[fixation_mask]
 		saccade_gaze_y = gaze_y[saccade_mask]
 
+
+		
 		ax.plot(self.data["InterpGaze"]["left"]["x"], self.data["InterpGaze"]["left"]["y"], 'r-')
 
 		i = 0
@@ -1205,9 +1209,11 @@ class Stimulus:
 			pd.DataFrame().from_dict(exp_data).to_csv(self.path + "/Subjects/" + self.subject_name + "/gaze_plot_data_" + self.name + ".csv")
 
 		plt.close(fig)
+		return fig
+		
 
 
-	def gazeHeatMap(self, save_fig=False, show_fig=True, save_data=False):
+	def gazeHeatMap(self, save_fig=False, show_fig=False, save_data=False):
 		"""Function to plot heat map of gaze.
 
 		Internal function of class that uses its `data` member variable. Can be invoked by an object of the class.
@@ -1227,7 +1233,10 @@ class Stimulus:
 			return
 
 		fig = plt.figure()
-		fig.canvas.set_window_title("Gaze Heat Map: " + self.name)
+		#fig.canvas.set_window_title("Gaze Heat Map: " + self.name)
+
+		# modif
+		ax = fig.add_subplot(111)
 
 		ax = plt.gca()
 
@@ -1297,8 +1306,10 @@ class Stimulus:
 
 		plt.close(fig)
 
+		return fig
 
-	def visualize(self, show=True, save_data=False):
+
+	def visualize(self, show=False, save_data=False):
 		"""Function to create dynamic plot of gaze and pupil size.
 
 		Internal function of class that uses its `data` member variable. Does not take any input and can be invoked by an object of the class.
@@ -1318,7 +1329,9 @@ class Stimulus:
 
 		# Initialising Plots
 		fig = plt.figure()
-		fig.canvas.set_window_title(self.name)
+		# fig.canvas.set_window_title(self.name)
+
+
 		ax = fig.add_subplot(2, 1, 1)
 		ax2 = fig.add_subplot(2, 1, 2)
 
@@ -1442,6 +1455,8 @@ class Stimulus:
 
 		if show:
 			plt.show()
+
+		return fig
 
 
 	def numberRevisits(self):
