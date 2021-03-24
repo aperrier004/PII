@@ -93,7 +93,7 @@ def toBase(filename):
 
         temp_dict['Timestamp'] = d['trackertime']
         temp_dict['StimulusName'] = d['name']
-        temp_dict['EventSource'] = 'E'
+        temp_dict['EventSource'] = ['ET']
         temp_dict['GazeLeftx'] = d['x_l']
         temp_dict['GazeRightx'] = d['x_r']
         temp_dict['GazeLefty'] = d['y_l']

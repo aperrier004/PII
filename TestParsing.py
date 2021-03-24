@@ -16,4 +16,6 @@ matplotlib.use("TkAgg")
 
 d = read_json("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
 
+print(d)
+
 generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")

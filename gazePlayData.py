@@ -8,30 +8,48 @@ from Parsing import generateCSV
 from PyTrack.Stimulus import Stimulus
 from tkinter import ttk
 import tkinter as tk
-from tkinter import filedialog
-from PIL import ImageTk, Image
 # from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib
 matplotlib.use("TkAgg")
 
-# CONSTANTS
+
 LARGE_FONT = ("Verdana", 12)
+
+folder_path = "F:/PII/GazePlay/bibouleJump.json"
+file_name = "bibouleJump"
+
+# Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
+generateCSV(folder_path + file_name + ".json")
+
+# On read le CSV pour avoir les données
+df = pd.read_csv(folder_path + file_name + ".csv")
+
+# A MODIFIER ??? en fonction de si c'est 16:9 ou 4:3
+# Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
+sensor_dict = {
+    "EyeTracker":
+    {
+        "Sampling_Freq": 1000,
+        "Display_width": 1980,
+        "Display_height": 1080,
+        "aoi": [0, 0, 1980, 1080]
+    }
+}
+
+# Creating Stimulus object
+stim = Stimulus(path="F:/PII/GazePlay",
+                data=df,
+                sensor_names=sensor_dict)
 
 
 class GazePlayDataVisualizer(tk.Tk):
-    """
-    A class used to represent the application
-    """
 
     def __init__(self, *args, **kwargs):
 
         tk.Tk.__init__(self, *args, **kwargs)
-        self.shared_data = {
-            "filename": tk.StringVar(),
-        }
 
-        tk.Tk.iconbitmap(self, default="gazeplayClassicLogo.ico")
+        #tk.Tk.iconbitmap(self, default="clienticon.ico")
         tk.Tk.wm_title(self, "GazePlayDataVisualizer")
 
         container = tk.Frame(self)
@@ -41,9 +59,7 @@ class GazePlayDataVisualizer(tk.Tk):
 
         self.frames = {}
 
-        self.filename = ""
-
-        for F in (StartPage, MenuPage, PageOne, PageTwo, PageThree, PageFour, PageFive):
+        for F in (StartPage, PageOne, PageTwo, PageThree, PageFour, PageFive):
 
             frame = F(container, self)
 
@@ -57,65 +73,34 @@ class GazePlayDataVisualizer(tk.Tk):
 
         frame = self.frames[cont]
         frame.tkraise()
-        frame.event_generate("<<ShowFrame>>")
 
 
 class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.controller = controller
-
-        label = tk.Label(
-            self, text="GazePlay Data Visualizer", font=LARGE_FONT)
+        label = tk.Label(self, text="Start Page", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        def openfn():
-            filename = filedialog.askopenfilename(
-                initialdir="/PII/GazePlay", title="Select A File", filetype=(("json files", "*.json"), ("all files", "*.*")))
-            controller.show_frame(MenuPage)
-            self.controller.shared_data["filename"].set(filename)
-            print("coucou")
-            print(filename)
-            return filename
+        button = ttk.Button(self, text="Visit Page 1",
+                            command=lambda: controller.show_frame(PageOne))
+        button.pack()
 
-        browseBtn = ttk.Button(
-            self, text="Select a .JSON file to start", command=openfn)
-        browseBtn.pack()
-
-        # Opening image file
-        img = Image.open('gazeplayClassicLogo.png')
-        img = img.resize((1000, 300))
-
-        photo = ImageTk.PhotoImage(img)
-        label = tk.Label(self, image=photo)
-        label.image = photo
-        label.pack()
-
-
-class MenuPage(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-
-        label = tk.Label(self, text="Menu", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
-
-        button1 = ttk.Button(self, text="Start with another file",
-                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
-
-        button2 = ttk.Button(self, text="Page Two",
+        button2 = ttk.Button(self, text="Visit Page 2",
                              command=lambda: controller.show_frame(PageTwo))
         button2.pack()
 
-        self.bind("<<ShowFrame>>", self.on_show_frame)
+        button3 = ttk.Button(self, text="Graph Page",
+                             command=lambda: controller.show_frame(PageThree))
+        button3.pack()
 
-    def on_show_frame(self, event):
-        filename = self.controller.shared_data["filename"].get()
-        print("eheh")
-        print(filename)
+        button4 = ttk.Button(self, text="Heat Map Page",
+                             command=lambda: controller.show_frame(PageFour))
+        button4.pack()
+
+        button5 = ttk.Button(self, text="Visualizer Page",
+                             command=lambda: controller.show_frame(PageFive))
+        button5.pack()
 
 
 class PageOne(tk.Frame):
@@ -161,6 +146,16 @@ class PageThree(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
+        # On appelle la fonction gazePlot() pour créer une figure que l'on donne au canvas
+        canvas = FigureCanvasTkAgg(stim.gazePlot(), self)
+
+        # canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
 
 class PageFour(tk.Frame):
 
@@ -172,6 +167,16 @@ class PageFour(tk.Frame):
         button1 = ttk.Button(self, text="Back to Home",
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
+
+        # On appelle la fonction gazeHeatMap() pour créer une figure que l'on donne au canvas
+        canvas = FigureCanvasTkAgg(stim.gazeHeatMap(), self)
+
+        # canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 class PageFive(tk.Frame):
@@ -187,14 +192,14 @@ class PageFive(tk.Frame):
 
         # ERROR
         # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
-        # canvas = FigureCanvasTkAgg(stim.visualize(), self)
+        #canvas = FigureCanvasTkAgg(stim.visualize(), self)
 
         # canvas.show()
-        # canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-        # toolbar = NavigationToolbar2Tk(canvas, self)
+        #toolbar = NavigationToolbar2Tk(canvas, self)
         # toolbar.update()
-        # canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        #canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 app = GazePlayDataVisualizer()
