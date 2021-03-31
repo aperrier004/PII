@@ -20,10 +20,10 @@ folder_path = "F:/PII/GazePlay/bibouleJump.json"
 file_name = "bibouleJump"
 
 # Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
-generateCSV(folder_path + file_name + ".json")
+generateCSV("F:/PII/GazePlay/bibouleJump.json")
 
 # On read le CSV pour avoir les données
-df = pd.read_csv(folder_path + file_name + ".csv")
+df = pd.read_csv("F:/PII/GazePlay/bibouleJump.csv")
 
 # A MODIFIER ??? en fonction de si c'est 16:9 ou 4:3
 # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
@@ -41,6 +41,8 @@ sensor_dict = {
 stim = Stimulus(path="F:/PII/GazePlay",
                 data=df,
                 sensor_names=sensor_dict)
+
+print(stim)
 
 
 class GazePlayDataVisualizer(tk.Tk):

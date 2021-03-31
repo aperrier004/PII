@@ -1,7 +1,7 @@
 ###
 # Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
 ###
-
+import os
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat
 from Parsing import generateCSV
@@ -28,10 +28,12 @@ class GazePlayDataVisualizer(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
         self.shared_data = {
-            "filename": tk.StringVar(),
+            "filepath": tk.StringVar(),
+            # NOT SURE ABOUT THAT
+            "stim": Stimulus,
         }
 
-        tk.Tk.iconbitmap(self, default="gazeplayClassicLogo.ico")
+        tk.Tk.iconbitmap(self, default="assets/gazeplayClassicLogo.ico")
         tk.Tk.wm_title(self, "GazePlayDataVisualizer")
 
         container = tk.Frame(self)
@@ -41,7 +43,7 @@ class GazePlayDataVisualizer(tk.Tk):
 
         self.frames = {}
 
-        self.filename = ""
+        self.filepath = ""
 
         for F in (StartPage, MenuPage, PageOne, PageTwo, PageThree, PageFour, PageFive):
 
@@ -57,6 +59,7 @@ class GazePlayDataVisualizer(tk.Tk):
 
         frame = self.frames[cont]
         frame.tkraise()
+        frame.update()
         frame.event_generate("<<ShowFrame>>")
 
 
@@ -70,21 +73,51 @@ class StartPage(tk.Frame):
             self, text="GazePlay Data Visualizer", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
+        def generateData(filepath):
+            if filepath != "":
+
+                # Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
+                generateCSV(filepath)
+
+                # On read le CSV pour avoir les données
+                csvPath = os.path.splitext(filepath)[0] + ".csv"
+                df = pd.read_csv(csvPath)
+
+                # TODO ??? en fonction de si c'est 16:9 ou 4:3
+                # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
+                sensor_dict = {
+                    "EyeTracker":
+                    {
+                        "Sampling_Freq": 1000,
+                        "Display_width": 1980,
+                        "Display_height": 1080,
+                        "aoi": [0, 0, 1980, 1080]
+                    }
+                }
+
+                # Creating Stimulus object
+                # os.getcwd() gets the current working directory
+                stim = Stimulus(path=os.getcwd(),
+                                data=df,
+                                sensor_names=sensor_dict)
+                self.controller.shared_data["stim"] = stim
+                print("test stim")
+                print(stim)
+
         def openfn():
-            filename = filedialog.askopenfilename(
+            filepath = filedialog.askopenfilename(
                 initialdir="/PII/GazePlay", title="Select A File", filetype=(("json files", "*.json"), ("all files", "*.*")))
+            self.controller.shared_data["filepath"].set(filepath)
+            generateData(filepath)
             controller.show_frame(MenuPage)
-            self.controller.shared_data["filename"].set(filename)
-            print("coucou")
-            print(filename)
-            return filename
+            return filepath
 
         browseBtn = ttk.Button(
             self, text="Select a .JSON file to start", command=openfn)
         browseBtn.pack()
 
         # Opening image file
-        img = Image.open('gazeplayClassicLogo.png')
+        img = Image.open('assets/gazeplayClassicLogo.png')
         img = img.resize((1000, 300))
 
         photo = ImageTk.PhotoImage(img)
@@ -102,52 +135,87 @@ class MenuPage(tk.Frame):
         label = tk.Label(self, text="Menu", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        button1 = ttk.Button(self, text="Start with another file",
-                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        btnRestart = ttk.Button(self, text="Start with another file",
+                                command=lambda: controller.show_frame(StartPage))
+        btnRestart.pack()
 
-        button2 = ttk.Button(self, text="Page Two",
-                             command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
+        btnPage1 = ttk.Button(self, text="Heatmap",
+                              command=lambda: controller.show_frame(PageOne))
+        btnPage1.pack()
 
+        btnPage2 = ttk.Button(self, text="Gazeplot",
+                              command=lambda: controller.show_frame(PageTwo))
+        btnPage2.pack()
+
+        # USELESS POTENTIELLEMENT (tout ce qu'il y a en dessous)
         self.bind("<<ShowFrame>>", self.on_show_frame)
 
     def on_show_frame(self, event):
-        filename = self.controller.shared_data["filename"].get()
-        print("eheh")
-        print(filename)
+        filepath = self.controller.shared_data["filepath"].get()
 
 
 class PageOne(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
+        self.controller = controller
+
+        label = tk.Label(self, text="Heatmap", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        button1 = ttk.Button(self, text="Back to Home",
-                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        btnBack = ttk.Button(self, text="Back to Home",
+                             command=lambda: controller.show_frame(MenuPage))
+        btnBack.pack()
 
-        button2 = ttk.Button(self, text="Page Two",
-                             command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
+        self.bind("<<ShowFrame>>", self.on_show_frame)
+
+    def on_show_frame(self, event):
+        stim = self.controller.shared_data["stim"]
+        print("stim de page One")
+        print(stim)
+
+        print("page One avant canvas")
+
+        # On appelle la fonction gazeHeatMap() pour créer une figure que l'on donne au canvas
+        canvas = FigureCanvasTkAgg(stim.gazeHeatMap(), self)
+
+        # canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+        print("page One après canvas")
 
 
 class PageTwo(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page Two!!!", font=LARGE_FONT)
+        self.controller = controller
+
+        label = tk.Label(self, text="GazePlot", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
 
-        button1 = ttk.Button(self, text="Back to Home",
-                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        btnBack = ttk.Button(self, text="Back to Home",
+                             command=lambda: controller.show_frame(MenuPage))
+        btnBack.pack()
 
-        button2 = ttk.Button(self, text="Page One",
-                             command=lambda: controller.show_frame(PageOne))
-        button2.pack()
+        self.bind("<<ShowFrame>>", self.on_show_frame)
+
+    def on_show_frame(self, event):
+        stim = self.controller.shared_data["stim"].get()
+
+        # On appelle la fonction gazePlot() pour créer une figure que l'on donne au canvas
+        canvas = FigureCanvasTkAgg(stim.gazePlot(), self)
+
+        # canvas.show()
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 class PageThree(tk.Frame):
