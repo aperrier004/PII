@@ -88,27 +88,6 @@ def toBase(filename):
 
     df = pd.DataFrame(columns=col_headers)
 
-    # PROGRESS BAR
-
-    # root = tk.Tk()
-
-    # root.geometry('300x50')
-    # root.title('Conversion des données')
-
-    # # THIS STYLE FOR THE PROGRESSBAR
-    # style = ttk.Style(root)
-    # style.layout('text.Horizontal.TProgressbar',
-    #              [('Horizontal.Progressbar.trough',
-    #                {'children': [('Horizontal.Progressbar.pbar',
-    #                               {'side': 'left', 'sticky': 'ns'})],
-    #                 'sticky': 'nswe'}),
-    #               ('Horizontal.Progressbar.label', {'sticky': ''})])      # ,lightcolor=None,bordercolo=None,darkcolor=None
-    # style.configure('text.Horizontal.TProgressbar', text='0 %')
-
-    # progressBar = ttk.Progressbar(
-    #     root, style='text.Horizontal.TProgressbar', length=200,  maximum=100, value=0,)
-    # progressBar.pack()
-
     i = 0
     for d in data:
         temp_dict = dict.fromkeys(col_headers)
@@ -133,20 +112,10 @@ def toBase(filename):
 
         i += 1
 
-        # PROGRESS BAR
-        # percentageValue = (i*100)/len(data)
-        # progressBar['value'] = percentageValue
-        # # THIS UPDATING TEXT IN PROGRESSBAR WITH PERCENTAGE
-        # style.configure('text.Horizontal.TProgressbar',
-        #                 text='{:g} %'.format(percentageValue))
-        # root.update_idletasks()
-
         # Print the progress in the console
-        print("Progress: %.2f" % ((i*100)/len(data)), end="\r")
+        #print("Progress: %.2f" % ((i*100)/len(data)), end="\r")
 
     # print(df['Timestamp'][1])
-
-    # root.mainloop()
 
     return df
 

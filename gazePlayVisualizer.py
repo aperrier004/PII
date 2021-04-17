@@ -1,6 +1,8 @@
 ###
 # Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
 ###
+
+# NE FONCTIONNE PAS
 import os
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat

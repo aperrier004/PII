@@ -1,7 +1,9 @@
 ###
 # Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
 ###
+# EXEMPLE PROPRE
 
+import os
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat
 from Parsing import generateCSV
@@ -38,11 +40,9 @@ sensor_dict = {
 }
 
 # Creating Stimulus object
-stim = Stimulus(path="F:/PII/GazePlay",
+stim = Stimulus(path=os.getcwd(),
                 data=df,
                 sensor_names=sensor_dict)
-
-print(stim)
 
 
 class GazePlayDataVisualizer(tk.Tk):

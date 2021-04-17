@@ -1,6 +1,7 @@
 ###
 # Fichier de tests pour les fonctions de parsing
 ###
+from statistiques import active_time
 from readingJSON import read_json
 import numpy as np
 import pandas as pd
@@ -14,8 +15,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import matplotlib
 matplotlib.use("TkAgg")
 
-d = read_json("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
 
-print(d)
+# d = read_json("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
 
-generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
+# print(d)
+
+# generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
+
+con_sec, con_min, con_hour = active_time("F:/PII/GazePlay/bibouleJump.json")
+
+print("{0}min et {1}s".format(int(con_min), int(con_sec)))

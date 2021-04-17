@@ -18,7 +18,7 @@ matplotlib.use("TkAgg")
 LARGE_FONT = ("Verdana", 12)
 
 # Pour générer le fichier CSV des données
-generateCompatibleFormat(exp_path="F:/PII/Smi/smi_eyetracker_freeviewing.txt",
+generateCompatibleFormat(exp_path="F:/PII/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt",
                          device="smi",
                          stim_list_mode='NA',
                          start='12',
@@ -26,10 +26,10 @@ generateCompatibleFormat(exp_path="F:/PII/Smi/smi_eyetracker_freeviewing.txt",
                          )
 
 # Device : smi
-# exp_path = "F:/PII/Smi/smi_eyetracker_freeviewing.txt"
+# exp_path = "F:/PII/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt"
 
 # Device : tobii
-# exp_path = "F:/PII/Tobii/tobii_sceneviewing_eyetrack_ascii.txt"
+# exp_path = "F:/PII/PyTrack_examples/Tobii/tobii_sceneviewing_eyetrack_ascii.txt"
 
 
 # Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
@@ -55,7 +55,7 @@ sensor_dict = {
 }
 
 # Creating Stimulus object
-# SMI : path = "F:/PII/Smi"
+# SMI : path = "F:/PII/PyTrack_examples/Smi"
 # JSON : path = "F:/PII/GazePlay"
 stim = Stimulus(path="F:/PII/Smi",
                 data=df,
