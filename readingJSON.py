@@ -1,5 +1,5 @@
 ###
-# Fichier comportant des fonctions pour lire un fichier .JSON 
+# Fichier comportant des fonctions pour lire un fichier .JSON
 #
 
 import os
@@ -54,7 +54,7 @@ def read_json(filename, debug=False):
     message("reading file '%s'" % filename)
 
     # est-ce qu'il faut le fermer ?
-    with open("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json") as f:
+    with open(filename) as f:
         file_data = json.load(f)
 
     # close file

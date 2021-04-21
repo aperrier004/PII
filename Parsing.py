@@ -40,10 +40,10 @@ def generateCSV(exp_path, device="tobii", stim_list_mode="NA", start='START', st
     exp_path = exp_path.replace("\\", "/")
 
     data_path = exp_path
-    print("Converting to base csv format: ", data_path.split("/")[-1])
 
     df = convertToBase(data_path, sensor_type='EyeTracker',
                        device=device, stim_list=stim_list_mode, start=start, stop=stop, eye=eye)
+
     df.to_csv(data_path.split(".")[0] + ".csv")
 
 
@@ -113,7 +113,7 @@ def toBase(filename):
         i += 1
 
         # Print the progress in the console
-        #print("Progress: %.2f" % ((i*100)/len(data)), end="\r")
+        print("Progress: %.2f" % ((i*100)/len(data)), end="\r")
 
     # print(df['Timestamp'][1])
 

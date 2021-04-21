@@ -1136,24 +1136,27 @@ class Stimulus:
         if self.data == None:
             return
 
-        fig = plt.figure(figsize=(4, 4))
+        fig = plt.figure(figsize=(4, 3))
 
-        #fig.canvas.set_window_title("Gaze Plot: " + self.name)
-        # modif
         ax = fig.add_subplot(111)
 
         # title
         ax.set_title("Gaze Plot")
 
         try:
-            img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpg")
+            # Affichage pas correct
+            img = np.zeros((self.height, self.width))
+            # img = plt.imread(self.path + "/GazePlay/Stimuli/" + self.name + ".jpg")
         except:
             try:
-                img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpeg")
+                img = plt.imread(
+                    self.path + "/GazePlay/Stimuli/" + self.name + ".jpeg")
             except:
                 img = np.zeros((self.height, self.width))
 
+    
         ax = plt.gca()
+        
         ax.imshow(img)
 
         # Rectangle AOI
@@ -1163,7 +1166,6 @@ class Stimulus:
                              (self.aoi_coords[3] - self.aoi_coords[1]),
                              color='r', fill=False, linestyle='--')
             ax.add_patch(rect)
-            print(rect.get_verts())
 
         # Circle AOI
         elif len(self.aoi_coords) == 3:
@@ -1172,14 +1174,12 @@ class Stimulus:
                               self.aoi_coords[2],
                               color='r', fill=False, linestyle='--')
             ax.add_patch(ellipse)
-            print(ellipse.get_verts())
 
         # Polygon AOI
         else:
             xy = np.asarray(self.aoi_coords)
             poly = Polygon(xy, color='r', fill=False, linestyle='--')
             ax.add_patch(poly)
-            print(poly.get_verts())
 
         fixation_dict = self.findFixations()
         fixation_indices = np.vstack(
@@ -1255,7 +1255,7 @@ class Stimulus:
         if self.data == None:
             return
 
-        fig = plt.figure(figsize=(3, 3))
+        fig = plt.figure(figsize=(4, 3))
         #fig.canvas.set_window_title("Gaze Heat Map: " + self.name)
 
         # modif
@@ -1274,10 +1274,12 @@ class Stimulus:
         y = np.repeat(y, 10)
 
         try:
-            img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpg")
+            img = plt.imread(
+                self.path + "/GazePlay/Stimuli/" + self.name + ".jpg")
         except:
             try:
-                img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpeg")
+                img = plt.imread(
+                    self.path + "/GazePlay/Stimuli/" + self.name + ".jpeg")
             except:
                 img = np.zeros((self.height, self.width))
 
@@ -1357,20 +1359,24 @@ class Stimulus:
 
         # Initialising Plots
         fig = plt.figure()
-        # fig.canvas.set_window_title(self.name)
+
+        fig = plt.figure(figsize=(5, 4))
 
         ax = fig.add_subplot(2, 1, 1)
         ax2 = fig.add_subplot(2, 1, 2)
 
         try:
-            img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpg")
+            # Affichage pas correct
+            img = np.zeros((self.height, self.width))
+            # img = plt.imread(self.path + "/GazePlay/Stimuli/" + self.name + ".jpg")
         except:
             try:
-                img = plt.imread(self.path + "/Stimuli/" + self.name + ".jpeg")
+                img = plt.imread(self.path + "/GazePlay/Stimuli/" + self.name + ".jpeg")
             except:
                 img = np.zeros((self.height, self.width))
 
         ax.imshow(img)
+
         # Rectangle AOI
         if len(self.aoi_coords) == 4 and (isinstance(self.aoi_coords[0], float) or isinstance(self.aoi_coords[0], int)):
             rect = Rectangle((self.aoi_coords[0], self.aoi_coords[1]),

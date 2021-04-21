@@ -194,14 +194,14 @@ class PageFive(tk.Frame):
 
         # ERROR
         # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
-        #canvas = FigureCanvasTkAgg(stim.visualize(), self)
+        canvas = FigureCanvasTkAgg(stim.visualize(), self)
 
         # canvas.show()
-        #canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+        canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
 
-        #toolbar = NavigationToolbar2Tk(canvas, self)
-        # toolbar.update()
-        #canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        toolbar = NavigationToolbar2Tk(canvas, self)
+        toolbar.update()
+        canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 
 app = GazePlayDataVisualizer()

@@ -48,7 +48,7 @@ def active_time(filename, debug=False):
     message("reading file '%s'" % filename)
 
     # est-ce qu'il faut le fermer ?
-    with open("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json") as f:
+    with open(filename) as f:
         file_data = json.load(f)
 
     # close file
@@ -67,3 +67,174 @@ def active_time(filename, debug=False):
         return seconds, minutes, hours
 
     return convertMillis(int(activeTime))
+
+
+def gameName(filename, debug=False):
+    """Returns a list with dicts for every trial.
+
+    Parameters
+    ----------
+    filename : str
+            Path to the file that has to be read
+    debug : bool
+            Indicating if DEBUG mode should be on or off; if DEBUG mode is on, information on what the script currently is doing will be printed to the console (default = False)
+
+    Returns
+    -------
+    data : list
+            With a dict for every trial. Following is the dictionary
+            0. x -array of Gaze x positions,
+            1. y -array of Gaze y positions,
+
+            A COMPLETER
+    """
+
+    if debug:
+        def message(msg):
+            print(msg)
+    else:
+        def message(msg):
+            pass
+
+    # # # # #
+    # file handling
+
+    # check if the file exists
+    if os.path.isfile(filename):
+        # open file
+        message("opening file '%s'" % filename)
+        f = open(filename, 'r')
+    # raise exception if the file does not exist
+    else:
+        raise Exception(
+            "Error in read_json: file '%s' does not exist" % filename)
+
+    # read file contents
+    message("reading file '%s'" % filename)
+
+    # est-ce qu'il faut le fermer ?
+    with open(filename) as f:
+        file_data = json.load(f)
+
+    # close file
+    message("closing file '%s'" % filename)
+    f.close()
+
+    gameName = file_data['gameName']
+
+    return gameName
+
+
+def goal(filename, debug=False):
+    """Returns a list with dicts for every trial.
+
+    Parameters
+    ----------
+    filename : str
+            Path to the file that has to be read
+    debug : bool
+            Indicating if DEBUG mode should be on or off; if DEBUG mode is on, information on what the script currently is doing will be printed to the console (default = False)
+
+    Returns
+    -------
+    data : list
+            With a dict for every trial. Following is the dictionary
+            0. x -array of Gaze x positions,
+            1. y -array of Gaze y positions,
+
+            A COMPLETER
+    """
+
+    if debug:
+        def message(msg):
+            print(msg)
+    else:
+        def message(msg):
+            pass
+
+    # # # # #
+    # file handling
+
+    # check if the file exists
+    if os.path.isfile(filename):
+        # open file
+        message("opening file '%s'" % filename)
+        f = open(filename, 'r')
+    # raise exception if the file does not exist
+    else:
+        raise Exception(
+            "Error in read_json: file '%s' does not exist" % filename)
+
+    # read file contents
+    message("reading file '%s'" % filename)
+
+    # est-ce qu'il faut le fermer ?
+    with open(filename) as f:
+        file_data = json.load(f)
+
+    # close file
+    message("closing file '%s'" % filename)
+    f.close()
+
+    goal = file_data['statsNbGoalsReached']
+
+    return goal
+
+
+def goalToReach(filename, debug=False):
+    """Returns a list with dicts for every trial.
+
+    Parameters
+    ----------
+    filename : str
+            Path to the file that has to be read
+    debug : bool
+            Indicating if DEBUG mode should be on or off; if DEBUG mode is on, information on what the script currently is doing will be printed to the console (default = False)
+
+    Returns
+    -------
+    data : list
+            With a dict for every trial. Following is the dictionary
+            0. x -array of Gaze x positions,
+            1. y -array of Gaze y positions,
+
+            A COMPLETER
+    """
+
+    if debug:
+        def message(msg):
+            print(msg)
+    else:
+        def message(msg):
+            pass
+
+    # # # # #
+    # file handling
+
+    # check if the file exists
+    if os.path.isfile(filename):
+        # open file
+        message("opening file '%s'" % filename)
+        f = open(filename, 'r')
+    # raise exception if the file does not exist
+    else:
+        raise Exception(
+            "Error in read_json: file '%s' does not exist" % filename)
+
+    # read file contents
+    message("reading file '%s'" % filename)
+
+    # est-ce qu'il faut le fermer ?
+    with open(filename) as f:
+        file_data = json.load(f)
+
+    # close file
+    message("closing file '%s'" % filename)
+    f.close()
+
+    goalToReach = file_data['statsNbGoalsToReach']
+
+    if(goalToReach == 0):
+        goalToReach = file_data['statsNbGoalsReached']
+
+    return goalToReach

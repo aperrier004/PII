@@ -1,7 +1,7 @@
 ###
 # Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
 ###
-from statistiques import active_time
+from statistiques import active_time, gameName, goal, goalToReach
 import os
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat
@@ -22,6 +22,9 @@ def showData():
 
     if filepath != "":
         csvPath = os.path.splitext(filepath)[0] + ".csv"
+        baseName = os.path.basename(filepath)
+        fileName = os.path.splitext(baseName)[0]
+
         if not os.path.isfile(csvPath):
             # Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
             generateCSV(filepath)
@@ -43,6 +46,7 @@ def showData():
         # Creating Stimulus object
         # os.getcwd() gets the current working directory
         stim = Stimulus(path=os.getcwd(),
+                        name=fileName,
                         data=df,
                         sensor_names=sensor_dict)
 
@@ -60,57 +64,89 @@ def showData():
         tk.Tk.wm_title(app2, "GazePlayDataVisualizer")
 
         # ------------------------------- Statistiques  -------------------------------
+        title = "Visualisation des données du fichier " + \
+            filepath + " correspondant au jeu " + gameName(filepath)
+        lblTitle = tk.Label(
+            app2, text=title)
+        lblTitle.pack(side=tk.TOP)
         # Temps de jeu actif
-        con_sec, con_min, con_hour = active_time(
-            "F:/PII/GazePlay/bibouleJump.json")
+        con_sec, con_min, con_hour = active_time(filepath)
 
-        print("{0}min et {1}s".format(int(con_min), int(con_sec)))
-
-        activeTime = "Temps de jeu actif : " + \
-            str(int(con_min)) + "min et " + str(int(con_sec)) + "s"
-
-        label = tk.Label(
-            app2, text=activeTime)
-
-        label.pack(pady=10, padx=10)
+        strActiveTime = "Temps de jeu actif : " + \
+            str(int(con_min)) + "min et " + \
+            str(int(con_sec)) + "s"
 
         # Tirs
+        nbGoal = goal(filepath)
+        strGoal = "Tirs : " + str(nbGoal)
+
         # Taux de réussite xx% (X/Y)
+        nbGoalToReach = goalToReach(filepath)
+        sucess = nbGoal/nbGoalToReach * 100
+        strGoalToReach = "Taux de réussite : " + str(sucess) + "% (" + \
+            str(nbGoal) + "/" + str(nbGoalToReach) + ")"
+
         # Temps de réaction moyen : en s
         # Temps de réaction médian : en s
         # Ecart-type : en s
 
+        strStats = strActiveTime + "\n\n" + strGoal + "\n\n" + strGoalToReach + "\n\n"
+
+        lblTemps = tk.Label(
+            app2, text=strStats)
+        lblTemps.pack(side=tk.LEFT)
+
+        right_frame = tk.Frame(app2)
+        left_frame = tk.Frame(app2)
+
         # ------------------------------- HEATMAP -------------------------------
 
         # On appelle la fonction heatmap() pour créer une figure que l'on donne au canvas
-        canvasHeatmap = FigureCanvasTkAgg(stim.gazeHeatMap(), app2)
-        canvasHeatmap.get_tk_widget().pack(side=tk.TOP, expand=True, anchor=tk.NE)
+        canvasHeatmap = FigureCanvasTkAgg(stim.gazeHeatMap(), right_frame)
+        canvasHeatmap.get_tk_widget().grid(row=0, column=1)
+        canvasHeatmap.get_tk_widget().update()
 
-        toolbarHeatmap = NavigationToolbar2Tk(canvasHeatmap, app2)
-        toolbarHeatmap.update()
-        # canvasHeatmap._tkcanvas.pack(side=tk.TOP)
+        toolbar_frame1 = tk.Frame(right_frame)
+        toolbar_heatmap = NavigationToolbar2Tk(canvasHeatmap, toolbar_frame1)
+        toolbar_frame1.grid(row=1, column=1)
+        toolbar_heatmap.update()
+        toolbar_frame1.update()
 
         # ------------------------------- GazePlot --------------------------------
 
         # On appelle la fonction heatmap() pour créer une figure que l'on donne au canvas
-        canvasGazePlot = FigureCanvasTkAgg(stim.gazePlot(), app2)
-        canvasGazePlot.get_tk_widget().pack(
-            side=tk.BOTTOM, expand=True, anchor=tk.SE)
+        canvasGazePlot = FigureCanvasTkAgg(stim.gazePlot(), right_frame)
+        canvasGazePlot.get_tk_widget().grid(row=2, column=1)
+        canvasGazePlot.get_tk_widget().update()
 
-        toolbarGazePlot = NavigationToolbar2Tk(canvasGazePlot, app2)
-        toolbarGazePlot.update()
+        toolbar_frame2 = tk.Frame(right_frame)
+        toolbar_gaze_plot = NavigationToolbar2Tk(
+            canvasGazePlot, toolbar_frame2)
+        toolbar_frame2.grid(row=3, column=1)
+        toolbar_gaze_plot.update()
+        toolbar_frame2.update()
 
-        # canvasGazePlot._tkcanvas.pack(side=tk.LEFT)
+        right_frame.pack(side=tk.RIGHT)
+        right_frame.update()
 
-        # NE FONCTIONNE PAS
         # ------------------------------- VISUALIZE PLOT -------------------------------
 
         # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
-        # canvasVisualize = FigureCanvasTkAgg(stim.visualize(), app2)
-        # canvasVisualize.get_tk_widget().pack( side=tk.BOTTOM, expand=True, anchor=tk.SE)
+        canvasVisualize = FigureCanvasTkAgg(stim.visualize(), left_frame)
+        canvasVisualize.get_tk_widget().grid(row=0, column=1)
+        canvasVisualize.get_tk_widget().update()
 
-        # toolbarVisualize = NavigationToolbar2Tk(canvasVisualize, app2)
-        # toolbarVisualize.update()
+        toolbar_frame3 = tk.Frame(left_frame)
+        toolbarVisualize = NavigationToolbar2Tk(
+            canvasVisualize, toolbar_frame3)
+        toolbar_frame3.grid(row=1, column=1)
+        toolbarVisualize.update()
+        toolbar_frame3.update()
+
+        left_frame.pack(side=tk.LEFT)
+        left_frame.update()
+
+        # END
 
         app2.mainloop()
     else:
@@ -136,7 +172,12 @@ width = app.winfo_screenwidth()
 height = app.winfo_screenheight()
 app.geometry("%dx%d" % (width, height))
 
-filepath = "F:/PII/GazePlay/bibouleJump.json"
+
+# Par défaut
+cwd = os.getcwd()
+cwd = cwd.replace("\\", " /")
+cwd = cwd.replace(" ", "")
+filepath = cwd + "/GazePlay/bibouleJump.json"
 
 # Opening image file
 img = Image.open('assets/gazeplayClassicLogo.png')
@@ -157,5 +198,11 @@ btnSubmit = tk.Button(app,
                       command=showData)
 btnSubmit.pack(pady=10, padx=10)
 
+
+def quit():
+    app.destroy()
+
+
+app.protocol("WM_DELETE_WINDOW", quit)
 
 app.mainloop()
