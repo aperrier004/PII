@@ -1,15 +1,16 @@
 ###
-# Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
+# Example of the first UI with an SMI file
 ###
 
+# WORKING
+
+import os
 import numpy as np
 import pandas as pd
 from PyTrack.formatBridge import generateCompatibleFormat
-from Parsing import generateCSV
 from PyTrack.Stimulus import Stimulus
 from tkinter import ttk
 import tkinter as tk
-# from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib
 matplotlib.use("TkAgg")
@@ -17,8 +18,15 @@ matplotlib.use("TkAgg")
 
 LARGE_FONT = ("Verdana", 12)
 
-# Pour générer le fichier CSV des données
-generateCompatibleFormat(exp_path="F:/PII/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt",
+# By default
+cwd = os.getcwd()
+cwd = cwd.replace("\\", " /")
+cwd = cwd.replace(" ", "")
+folder_path = cwd + "/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt"
+file_name = "smi_eyetracker_freeviewing"
+
+# Generate a CSV file with a JSON file (from GazePlay)
+generateCompatibleFormat(exp_path=folder_path,
                          device="smi",
                          stim_list_mode='NA',
                          start='12',
@@ -26,23 +34,18 @@ generateCompatibleFormat(exp_path="F:/PII/PyTrack_examples/Smi/smi_eyetracker_fr
                          )
 
 # Device : smi
-# exp_path = "F:/PII/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt"
+# folder_path = cwd + "/PyTrack_examples/Smi/smi_eyetracker_freeviewing.txt"
 
 # Device : tobii
-# exp_path = "F:/PII/PyTrack_examples/Tobii/tobii_sceneviewing_eyetrack_ascii.txt"
+# folder_path = cwd + "/PyTrack_examples/Tobii/tobii_sceneviewing_eyetrack_ascii.txt"
 
 
-# Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
-# generateCSV("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.json")
+# Get the data from the CSV file by reading it
+csvPath = os.path.splitext(folder_path)[0] + ".csv"
+# smi
+df = pd.read_csv(csvPath)
 
-# On read le CSV pour avoir les données
-# df pour smi
-df = pd.read_csv("F:/PII/Smi/smi_eyetracker_freeviewing.csv")
 
-# df pour JSON
-#df = pd.read_csv("F:/PII/GazePlay/2021-01-12-22-43-15-replayData.csv")
-
-# A MODIFIER ??? en fonction de si c'est 16:9 ou 4:3
 # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
 sensor_dict = {
     "EyeTracker":
@@ -55,9 +58,9 @@ sensor_dict = {
 }
 
 # Creating Stimulus object
-# SMI : path = "F:/PII/PyTrack_examples/Smi"
-# JSON : path = "F:/PII/GazePlay"
-stim = Stimulus(path="F:/PII/Smi",
+# SMI : path = cwd + "/PyTrack_examples/Smi"
+smiPath = cwd + "/Smi"
+stim = Stimulus(path=smiPath,
                 data=df,
                 sensor_names=sensor_dict)
 
@@ -175,7 +178,7 @@ class PageThree(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        # On appelle la fonction gazePlot() pour créer une figure que l'on donne au canvas
+        # Use gazePlot() to create a figure that we give to the canva
         canvas = FigureCanvasTkAgg(stim.gazePlot(), self)
 
         # canvas.show()
@@ -197,7 +200,7 @@ class PageFour(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        # On appelle la fonction gazeHeatMap() pour créer une figure que l'on donne au canvas
+        # Use gazeHeatMap() to create a figure that we give to the canva
         canvas = FigureCanvasTkAgg(stim.gazeHeatMap(), self)
 
         # canvas.show()
@@ -220,7 +223,7 @@ class PageFive(tk.Frame):
         button1.pack()
 
         # ERROR
-        # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
+        # Use visualize() to create a figure that we give to the canva
         #canvas = FigureCanvasTkAgg(stim.visualize(), self)
 
         # canvas.show()

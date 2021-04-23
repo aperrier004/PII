@@ -1144,8 +1144,9 @@ class Stimulus:
         ax.set_title("Gaze Plot")
 
         try:
-            # Affichage pas correct
+            # Dumb showing (purple image)
             img = np.zeros((self.height, self.width))
+            # Right path, but wrong format
             # img = plt.imread(self.path + "/GazePlay/Stimuli/" + self.name + ".jpg")
         except:
             try:
@@ -1366,8 +1367,9 @@ class Stimulus:
         ax2 = fig.add_subplot(2, 1, 2)
 
         try:
-            # Affichage pas correct
+            # Dumb showing (purple image)
             img = np.zeros((self.height, self.width))
+            # Right path, but wrong format
             # img = plt.imread(self.path + "/GazePlay/Stimuli/" + self.name + ".jpg")
         except:
             try:

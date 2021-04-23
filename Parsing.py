@@ -1,22 +1,18 @@
 ###
-# Fichier de fonction pour le parsing
+# Functions for parsing
 ###
 import os
 import json
-import tkinter as tk
-import tkinter.ttk as ttk
 from readingJSON import read_json
 import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine
 
-from PyTrack.etDataReader import read_edf, read_idf, read_tobii
-
 
 def generateCSV(exp_path, device="tobii", stim_list_mode="NA", start='START', stop=None, eye='B', reading_method="SQL"):
     """Function to convert data into the base format before starting analysis and visualization.
 
-    The function creates a directory called 'csv_files' inside the `Data` folder and stores the converted csv files in it. If `reading_method` is specified as 'SQL' then an SQL database is created inside the 'Data' folder but the user need not worry about it.
+    The function creates a CSV file
 
     Parameters
     ----------

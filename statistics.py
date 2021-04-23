@@ -1,11 +1,12 @@
+###
+# Functions for the statistics
+###
 import os
 import json
 
-import numpy as np
-
 
 def active_time(filename, debug=False):
-    """Returns a list with dicts for every trial.
+    """Returns a conversion of ms to s, min and hour
 
     Parameters
     ----------
@@ -16,12 +17,8 @@ def active_time(filename, debug=False):
 
     Returns
     -------
-    data : list
-            With a dict for every trial. Following is the dictionary
-            0. x -array of Gaze x positions,
-            1. y -array of Gaze y positions,
+    seconds, minutes, hours
 
-            A COMPLETER
     """
 
     if debug:
@@ -47,7 +44,6 @@ def active_time(filename, debug=False):
     # read file contents
     message("reading file '%s'" % filename)
 
-    # est-ce qu'il faut le fermer ?
     with open(filename) as f:
         file_data = json.load(f)
 
@@ -70,7 +66,7 @@ def active_time(filename, debug=False):
 
 
 def gameName(filename, debug=False):
-    """Returns a list with dicts for every trial.
+    """Returns the name of the game
 
     Parameters
     ----------
@@ -81,12 +77,7 @@ def gameName(filename, debug=False):
 
     Returns
     -------
-    data : list
-            With a dict for every trial. Following is the dictionary
-            0. x -array of Gaze x positions,
-            1. y -array of Gaze y positions,
-
-            A COMPLETER
+    gameName : str
     """
 
     if debug:
@@ -112,7 +103,6 @@ def gameName(filename, debug=False):
     # read file contents
     message("reading file '%s'" % filename)
 
-    # est-ce qu'il faut le fermer ?
     with open(filename) as f:
         file_data = json.load(f)
 
@@ -126,7 +116,7 @@ def gameName(filename, debug=False):
 
 
 def goal(filename, debug=False):
-    """Returns a list with dicts for every trial.
+    """Returns the number of goals
 
     Parameters
     ----------
@@ -137,12 +127,7 @@ def goal(filename, debug=False):
 
     Returns
     -------
-    data : list
-            With a dict for every trial. Following is the dictionary
-            0. x -array of Gaze x positions,
-            1. y -array of Gaze y positions,
-
-            A COMPLETER
+    goals : int
     """
 
     if debug:
@@ -168,7 +153,6 @@ def goal(filename, debug=False):
     # read file contents
     message("reading file '%s'" % filename)
 
-    # est-ce qu'il faut le fermer ?
     with open(filename) as f:
         file_data = json.load(f)
 
@@ -182,7 +166,7 @@ def goal(filename, debug=False):
 
 
 def goalToReach(filename, debug=False):
-    """Returns a list with dicts for every trial.
+    """Returns the number of goals to reach
 
     Parameters
     ----------
@@ -193,12 +177,7 @@ def goalToReach(filename, debug=False):
 
     Returns
     -------
-    data : list
-            With a dict for every trial. Following is the dictionary
-            0. x -array of Gaze x positions,
-            1. y -array of Gaze y positions,
-
-            A COMPLETER
+    goalToReach : int
     """
 
     if debug:
@@ -224,7 +203,6 @@ def goalToReach(filename, debug=False):
     # read file contents
     message("reading file '%s'" % filename)
 
-    # est-ce qu'il faut le fermer ?
     with open(filename) as f:
         file_data = json.load(f)
 

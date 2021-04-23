@@ -1,37 +1,41 @@
 ###
-# Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
+#   Main application
 ###
-from statistiques import active_time, gameName, goal, goalToReach
+
+# WORKING
+
+from statistics import active_time, gameName, goal, goalToReach
 import os
 import pandas as pd
-from PyTrack.formatBridge import generateCompatibleFormat
 from Parsing import generateCSV
 from PyTrack.Stimulus import Stimulus
 from tkinter import ttk
 import tkinter as tk
 from tkinter import filedialog
 from PIL import ImageTk, Image
-# from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib
 matplotlib.use("TkAgg")
 
 
+# Create the second window to visualize data
 def showData():
     global filepath
 
+    # Check if filepath is set
     if filepath != "":
         csvPath = os.path.splitext(filepath)[0] + ".csv"
         baseName = os.path.basename(filepath)
         fileName = os.path.splitext(baseName)[0]
 
+        # If there is not any csv file with the same name, we create one
         if not os.path.isfile(csvPath):
-            # Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
+            # Generate a CSV file with a JSON file (from GazePlay)
             generateCSV(filepath)
 
+        # Get the data from the CSV file by reading it
         df = pd.read_csv(csvPath)
 
-        # TODO ??? en fonction de si c'est 16:9 ou 4:3
         # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
         sensor_dict = {
             "EyeTracker":
@@ -50,45 +54,49 @@ def showData():
                         data=df,
                         sensor_names=sensor_dict)
 
-        # Debut de la seconde fenetre
+        # Second window
         app2 = tk.Tk()
 
-        # Pour mettre l'application à la taille de l'ecran
+        # Set the window at the size of the screen
         width = app2.winfo_screenwidth()
         height = app2.winfo_screenheight()
         app2.geometry("%dx%d" % (width, height))
 
-        # Icone de la fenetre
+        # Icon
         tk.Tk.iconbitmap(app2, default="assets/gazeplayClassicLogo.ico")
-        # Titre de la fenetre
+        # Title
         tk.Tk.wm_title(app2, "GazePlayDataVisualizer")
 
-        # ------------------------------- Statistiques  -------------------------------
+        # ------------------------------- Statistics  -------------------------------
+        # "Visualization of the data from the file" ... "corresponding to the game"
         title = "Visualisation des données du fichier " + \
             filepath + " correspondant au jeu " + gameName(filepath)
         lblTitle = tk.Label(
             app2, text=title)
         lblTitle.pack(side=tk.TOP)
-        # Temps de jeu actif
+
+        # --- Active game time
+        # Converts ms to s, min and h
         con_sec, con_min, con_hour = active_time(filepath)
 
+        #"Active game time"
         strActiveTime = "Temps de jeu actif : " + \
             str(int(con_min)) + "min et " + \
             str(int(con_sec)) + "s"
 
-        # Tirs
+        # --- Goals
+        # Get the number of goals that have reached
         nbGoal = goal(filepath)
+        # "Goals"
         strGoal = "Tirs : " + str(nbGoal)
 
-        # Taux de réussite xx% (X/Y)
+        # --- Sucess rate in % (goals reached/total goals)
+        # Get the number of total goals
         nbGoalToReach = goalToReach(filepath)
         sucess = nbGoal/nbGoalToReach * 100
+        # "Sucess rate"
         strGoalToReach = "Taux de réussite : " + str(sucess) + "% (" + \
             str(nbGoal) + "/" + str(nbGoalToReach) + ")"
-
-        # Temps de réaction moyen : en s
-        # Temps de réaction médian : en s
-        # Ecart-type : en s
 
         strStats = strActiveTime + "\n\n" + strGoal + "\n\n" + strGoalToReach + "\n\n"
 
@@ -96,12 +104,13 @@ def showData():
             app2, text=strStats)
         lblTemps.pack(side=tk.LEFT)
 
+        # For the UI
         right_frame = tk.Frame(app2)
         left_frame = tk.Frame(app2)
 
         # ------------------------------- HEATMAP -------------------------------
 
-        # On appelle la fonction heatmap() pour créer une figure que l'on donne au canvas
+        # Use gazeHeatMap() to create a figure that we give to the canva
         canvasHeatmap = FigureCanvasTkAgg(stim.gazeHeatMap(), right_frame)
         canvasHeatmap.get_tk_widget().grid(row=0, column=1)
         canvasHeatmap.get_tk_widget().update()
@@ -114,7 +123,7 @@ def showData():
 
         # ------------------------------- GazePlot --------------------------------
 
-        # On appelle la fonction heatmap() pour créer une figure que l'on donne au canvas
+        # Use gazePlot() to create a figure that we give to the canva
         canvasGazePlot = FigureCanvasTkAgg(stim.gazePlot(), right_frame)
         canvasGazePlot.get_tk_widget().grid(row=2, column=1)
         canvasGazePlot.get_tk_widget().update()
@@ -131,7 +140,7 @@ def showData():
 
         # ------------------------------- VISUALIZE PLOT -------------------------------
 
-        # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
+        # Use gazeHeatMap() to create a figure that we give to the canva
         canvasVisualize = FigureCanvasTkAgg(stim.visualize(), left_frame)
         canvasVisualize.get_tk_widget().grid(row=0, column=1)
         canvasVisualize.get_tk_widget().update()
@@ -153,13 +162,14 @@ def showData():
         print("No selected file")
 
 
+# Function to open the file explorer
 def openfn():
     global filepath
     filepath = filedialog.askopenfilename(
         initialdir="/PII/GazePlay", title="Select A File", filetype=(("json files", "*.json"), ("all files", "*.*")))
 
 
-# Fenêtre de départ
+# Start window
 app = tk.Tk()
 
 # Set an icon to the window
@@ -167,13 +177,13 @@ tk.Tk.iconbitmap(app, default="assets/gazeplayClassicLogo.ico")
 # Set a title to the window
 tk.Tk.wm_title(app, "GazePlayDataVisualizer")
 
-# Pour mettre l'application à la taille de l'ecran
+# Set the window at the size of the screen
 width = app.winfo_screenwidth()
 height = app.winfo_screenheight()
 app.geometry("%dx%d" % (width, height))
 
 
-# Par défaut
+# By default there is a file selected
 cwd = os.getcwd()
 cwd = cwd.replace("\\", " /")
 cwd = cwd.replace(" ", "")
@@ -199,6 +209,7 @@ btnSubmit = tk.Button(app,
 btnSubmit.pack(pady=10, padx=10)
 
 
+# To destroy the application and make the script stop running
 def quit():
     app.destroy()
 

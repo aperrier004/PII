@@ -1,33 +1,35 @@
 ###
-# Fichier principal permettant d'ouvrir une interface pour afficher des graphiques
+#   Example of the idea of my first GUI
 ###
-# EXEMPLE PROPRE
+
+# WORKING
 
 import os
 import pandas as pd
-from PyTrack.formatBridge import generateCompatibleFormat
 from Parsing import generateCSV
 from PyTrack.Stimulus import Stimulus
 from tkinter import ttk
 import tkinter as tk
-# from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import matplotlib
 matplotlib.use("TkAgg")
 
-
 LARGE_FONT = ("Verdana", 12)
 
-folder_path = "F:/PII/GazePlay/bibouleJump.json"
+# By default
+cwd = os.getcwd()
+cwd = cwd.replace("\\", " /")
+cwd = cwd.replace(" ", "")
+folder_path = cwd + "/GazePlay/bibouleJump.json"
 file_name = "bibouleJump"
 
-# Fonction qui permet de générer un CSV avec un fichier JSON de gazeplay
-generateCSV("F:/PII/GazePlay/bibouleJump.json")
+# Generate a CSV file with a JSON file (from GazePlay)
+generateCSV(folder_path)
 
-# On read le CSV pour avoir les données
-df = pd.read_csv("F:/PII/GazePlay/bibouleJump.csv")
+# Get the data from the CSV file by reading it
+csvPath = os.path.splitext(folder_path)[0] + ".csv"
+df = pd.read_csv(csvPath)
 
-# A MODIFIER ??? en fonction de si c'est 16:9 ou 4:3
 # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
 sensor_dict = {
     "EyeTracker":
@@ -51,7 +53,6 @@ class GazePlayDataVisualizer(tk.Tk):
 
         tk.Tk.__init__(self, *args, **kwargs)
 
-        #tk.Tk.iconbitmap(self, default="clienticon.ico")
         tk.Tk.wm_title(self, "GazePlayDataVisualizer")
 
         container = tk.Frame(self)
@@ -148,7 +149,7 @@ class PageThree(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        # On appelle la fonction gazePlot() pour créer une figure que l'on donne au canvas
+        # Use gazePlot() to create a figure that we give to the canva
         canvas = FigureCanvasTkAgg(stim.gazePlot(), self)
 
         # canvas.show()
@@ -170,7 +171,7 @@ class PageFour(tk.Frame):
                              command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        # On appelle la fonction gazeHeatMap() pour créer une figure que l'on donne au canvas
+        # Use gazeHeatMap() to create a figure that we give to the canva
         canvas = FigureCanvasTkAgg(stim.gazeHeatMap(), self)
 
         # canvas.show()
@@ -193,7 +194,7 @@ class PageFive(tk.Frame):
         button1.pack()
 
         # ERROR
-        # On appelle la fonction visualize() pour créer une figure que l'on donne au canvas
+        # Use visualize() to create a figure that we give to the canva
         canvas = FigureCanvasTkAgg(stim.visualize(), self)
 
         # canvas.show()

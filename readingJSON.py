@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 
 
 def read_json(filename, debug=False):
-    """Returns a list with dicts for every trial.
+    """Returns a list with the data of the json file.
 
     Parameters
     ----------
@@ -24,10 +24,12 @@ def read_json(filename, debug=False):
     -------
     data : list
             With a dict for every trial. Following is the dictionary
-            0. x -array of Gaze x positions,
-            1. y -array of Gaze y positions,
-
-            A COMPLETER
+            0. timestamp of the gaze
+            1. name of the trial
+            2. x -array of Gaze left positions,
+            3. x -array of Gaze right positions,
+            4. y -array of Gaze left positions,
+            5. y -array of Gaze right positions
     """
 
     if debug:
@@ -53,7 +55,6 @@ def read_json(filename, debug=False):
     # read file contents
     message("reading file '%s'" % filename)
 
-    # est-ce qu'il faut le fermer ?
     with open(filename) as f:
         file_data = json.load(f)
 
@@ -77,12 +78,11 @@ def read_json(filename, debug=False):
 
     lenghtPoints = len(file_data['coordinatesAndTimeStamp'])
 
-    # pour obtenir la vraie position du x et du y selon le screen ratio
-    # par défaut, on considère l'écran en 16:9
+    # Screen ratio 16:9
     real_x = 1920
     real_y = 1080
 
-    # S'il est en 4:3
+    # if it's 4:3
     if file_data['screenAspectRatio'] == "4:3":
         real_x = 1280
         real_y = 960
