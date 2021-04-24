@@ -2,6 +2,8 @@
 Individual IT Project 2021 ENSC 2A
 Author: Alban PERRIER - aperrier004@ensc.fr
 
+*Read this in other languages: [English](README.en-GB.md), [French](README.md).*
+
 ## Installation
 ### Installing the Python environment
 If you don't already have a Python environment on your computer, you can:
