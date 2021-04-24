@@ -2,6 +2,8 @@
 Projet Informatique Individuel 2021 ENSC 2A
 Auteur : Alban PERRIER - aperrier004@ensc.fr
 
+*Read this in other languages: [English](README.en-GB.md), [French](README.md).*
+
 ## Installation
 ### Installation de l’environnement de Python
 Si vous ne possédez pas déjà un environnement Python sur votre ordinateur, vous pouvez :
