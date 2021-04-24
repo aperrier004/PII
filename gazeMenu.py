@@ -5,13 +5,16 @@
 # WORKING
 
 import os
+import tkinter as tk
+from tkinter import ttk
+
+import matplotlib
 import pandas as pd
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
 from Parsing import generateCSV
 from PyTrack.Stimulus import Stimulus
-from tkinter import ttk
-import tkinter as tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib
+
 matplotlib.use("TkAgg")
 
 LARGE_FONT = ("Verdana", 12)

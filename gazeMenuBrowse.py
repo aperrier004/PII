@@ -5,16 +5,19 @@
 # NOT WORKING
 
 import os
-import pandas as pd
-from Parsing import generateCSV
-from PyTrack.Stimulus import Stimulus
-from tkinter import ttk
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import ttk
+
+import matplotlib
+import pandas as pd
 from PIL import ImageTk, Image
 # from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib
+
+from Parsing import generateCSV
+from PyTrack.Stimulus import Stimulus
+
 matplotlib.use("TkAgg")
 
 # CONSTANTS

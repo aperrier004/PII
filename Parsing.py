@@ -1,12 +1,14 @@
 ###
 # Functions for parsing
 ###
-import os
 import json
-from readingJSON import read_json
+import os
+
 import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine
+
+from readingJSON import read_json
 
 
 def generateCSV(exp_path, device="tobii", stim_list_mode="NA", start='START', stop=None, eye='B', reading_method="SQL"):

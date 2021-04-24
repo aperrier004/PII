@@ -2,12 +2,10 @@
 # Fichier comportant des fonctions pour lire un fichier .JSON
 #
 
-import os
 import json
+import os
 
 import numpy as np
-import pandas as pd
-from sqlalchemy import create_engine
 
 
 def read_json(filename, debug=False):

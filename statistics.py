@@ -1,8 +1,8 @@
 ###
 # Functions for the statistics
 ###
-import os
 import json
+import os
 
 
 def active_time(filename, debug=False):

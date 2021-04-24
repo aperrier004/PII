@@ -5,14 +5,16 @@
 # WORKING
 
 import os
-import numpy as np
-import pandas as pd
-from PyTrack.formatBridge import generateCompatibleFormat
-from PyTrack.Stimulus import Stimulus
-from tkinter import ttk
 import tkinter as tk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from tkinter import ttk
+
 import matplotlib
+import pandas as pd
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+
+from PyTrack.Stimulus import Stimulus
+from PyTrack.formatBridge import generateCompatibleFormat
+
 matplotlib.use("TkAgg")
 
 

@@ -1,4 +1,12 @@
-from distutils.core import setup
-import py2exe
+from setuptools import setup
 
-setup(console=['main.py'])
+setup(
+    name='PII',
+    version='',
+    packages=['PyTrack'],
+    url='',
+    license='',
+    author='Alban Perrier',
+    author_email='aperrier004@ensc.fr',
+    description='PII ENSC 2A 2021'
+)

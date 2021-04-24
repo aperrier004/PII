@@ -4,39 +4,42 @@
 
 # WORKING
 
-from statistics import active_time, gameName, goal, goalToReach
 import os
-import pandas as pd
-from Parsing import generateCSV
-from PyTrack.Stimulus import Stimulus
-from tkinter import ttk
 import tkinter as tk
 from tkinter import filedialog
+
+import matplotlib
+import pandas as pd
 from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import matplotlib
+
+from Parsing import generateCSV
+from PyTrack.Stimulus import Stimulus
+from statistics import active_time, gameName, goal, goalToReach
+
 matplotlib.use("TkAgg")
 
 
 # Create the second window to visualize data
-def showData():
+def show_data():
     global filepath
 
     # Check if filepath is set
     if filepath != "":
-        csvPath = os.path.splitext(filepath)[0] + ".csv"
-        baseName = os.path.basename(filepath)
-        fileName = os.path.splitext(baseName)[0]
+        csv_path = os.path.splitext(filepath)[0] + ".csv"
+        base_name = os.path.basename(filepath)
+        file_name = os.path.splitext(base_name)[0]
 
         # If there is not any csv file with the same name, we create one
-        if not os.path.isfile(csvPath):
+        if not os.path.isfile(csv_path):
             # Generate a CSV file with a JSON file (from GazePlay)
             generateCSV(filepath)
 
         # Get the data from the CSV file by reading it
-        df = pd.read_csv(csvPath)
+        df = pd.read_csv(csv_path)
 
-        # Dictionary containing details of recording. Please change the values according to your experiment. If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
+        # Dictionary containing details of recording. Please change the values according to your experiment.
+        # If no AOI is desired, set aoi value to [0, 0, Display_width, Display_height]
         sensor_dict = {
             "EyeTracker":
             {
@@ -49,18 +52,18 @@ def showData():
 
         # Creating Stimulus object
         # os.getcwd() gets the current working directory
-        stim = Stimulus(path=os.getcwd(),
-                        name=fileName,
-                        data=df,
-                        sensor_names=sensor_dict)
+        stimulus = Stimulus(path=os.getcwd(),
+                            name=file_name,
+                            data=df,
+                            sensor_names=sensor_dict)
 
         # Second window
         app2 = tk.Tk()
 
         # Set the window at the size of the screen
-        width = app2.winfo_screenwidth()
-        height = app2.winfo_screenheight()
-        app2.geometry("%dx%d" % (width, height))
+        screen_width = app2.winfo_screenwidth()
+        screen_height = app2.winfo_screenheight()
+        app2.geometry("%dx%d" % (screen_width, screen_height))
 
         # Icon
         tk.Tk.iconbitmap(app2, default="assets/gazeplayClassicLogo.ico")
@@ -69,40 +72,40 @@ def showData():
 
         # ------------------------------- Statistics  -------------------------------
         # "Visualization of the data from the file" ... "corresponding to the game"
-        title = "Visualisation des données du fichier " + \
+        title = "Visualisation des donnees du fichier " + \
             filepath + " correspondant au jeu " + gameName(filepath)
-        lblTitle = tk.Label(
+        lbl_title = tk.Label(
             app2, text=title)
-        lblTitle.pack(side=tk.TOP)
+        lbl_title.pack(side=tk.TOP)
 
         # --- Active game time
         # Converts ms to s, min and h
         con_sec, con_min, con_hour = active_time(filepath)
 
-        #"Active game time"
-        strActiveTime = "Temps de jeu actif : " + \
+        # "Active game time"
+        str_active_time = "Temps de jeu actif : " + \
             str(int(con_min)) + "min et " + \
             str(int(con_sec)) + "s"
 
         # --- Goals
         # Get the number of goals that have reached
-        nbGoal = goal(filepath)
+        nb_goal = goal(filepath)
         # "Goals"
-        strGoal = "Tirs : " + str(nbGoal)
+        str_goal = "Tirs : " + str(nb_goal)
 
-        # --- Sucess rate in % (goals reached/total goals)
+        # --- Success rate in % (goals reached/total goals)
         # Get the number of total goals
-        nbGoalToReach = goalToReach(filepath)
-        sucess = nbGoal/nbGoalToReach * 100
-        # "Sucess rate"
-        strGoalToReach = "Taux de réussite : " + str(sucess) + "% (" + \
-            str(nbGoal) + "/" + str(nbGoalToReach) + ")"
+        nb_goal_to_reach = goalToReach(filepath)
+        success = nb_goal/nb_goal_to_reach * 100
+        # "Success rate"
+        str_goal_to_reach = "Taux de réussite : " + str(success) + "% (" + \
+            str(nb_goal) + "/" + str(nb_goal_to_reach) + ")"
 
-        strStats = strActiveTime + "\n\n" + strGoal + "\n\n" + strGoalToReach + "\n\n"
+        str_stats = str_active_time + "\n\n" + str_goal + "\n\n" + str_goal_to_reach + "\n\n"
 
-        lblTemps = tk.Label(
-            app2, text=strStats)
-        lblTemps.pack(side=tk.LEFT)
+        lbl_temps = tk.Label(
+            app2, text=str_stats)
+        lbl_temps.pack(side=tk.LEFT)
 
         # For the UI
         right_frame = tk.Frame(app2)
@@ -111,12 +114,12 @@ def showData():
         # ------------------------------- HEATMAP -------------------------------
 
         # Use gazeHeatMap() to create a figure that we give to the canva
-        canvasHeatmap = FigureCanvasTkAgg(stim.gazeHeatMap(), right_frame)
-        canvasHeatmap.get_tk_widget().grid(row=0, column=1)
-        canvasHeatmap.get_tk_widget().update()
+        canvas_heatmap = FigureCanvasTkAgg(stimulus.gazeHeatMap(), right_frame)
+        canvas_heatmap.get_tk_widget().grid(row=0, column=1)
+        canvas_heatmap.get_tk_widget().update()
 
         toolbar_frame1 = tk.Frame(right_frame)
-        toolbar_heatmap = NavigationToolbar2Tk(canvasHeatmap, toolbar_frame1)
+        toolbar_heatmap = NavigationToolbar2Tk(canvas_heatmap, toolbar_frame1)
         toolbar_frame1.grid(row=1, column=1)
         toolbar_heatmap.update()
         toolbar_frame1.update()
@@ -124,13 +127,13 @@ def showData():
         # ------------------------------- GazePlot --------------------------------
 
         # Use gazePlot() to create a figure that we give to the canva
-        canvasGazePlot = FigureCanvasTkAgg(stim.gazePlot(), right_frame)
-        canvasGazePlot.get_tk_widget().grid(row=2, column=1)
-        canvasGazePlot.get_tk_widget().update()
+        canvas_gaze_plot = FigureCanvasTkAgg(stimulus.gazePlot(), right_frame)
+        canvas_gaze_plot.get_tk_widget().grid(row=2, column=1)
+        canvas_gaze_plot.get_tk_widget().update()
 
         toolbar_frame2 = tk.Frame(right_frame)
         toolbar_gaze_plot = NavigationToolbar2Tk(
-            canvasGazePlot, toolbar_frame2)
+            canvas_gaze_plot, toolbar_frame2)
         toolbar_frame2.grid(row=3, column=1)
         toolbar_gaze_plot.update()
         toolbar_frame2.update()
@@ -141,15 +144,15 @@ def showData():
         # ------------------------------- VISUALIZE PLOT -------------------------------
 
         # Use gazeHeatMap() to create a figure that we give to the canva
-        canvasVisualize = FigureCanvasTkAgg(stim.visualize(), left_frame)
-        canvasVisualize.get_tk_widget().grid(row=0, column=1)
-        canvasVisualize.get_tk_widget().update()
+        canvas_visualize = FigureCanvasTkAgg(stimulus.visualize(), left_frame)
+        canvas_visualize.get_tk_widget().grid(row=0, column=1)
+        canvas_visualize.get_tk_widget().update()
 
         toolbar_frame3 = tk.Frame(left_frame)
-        toolbarVisualize = NavigationToolbar2Tk(
-            canvasVisualize, toolbar_frame3)
+        toolbar_visualize = NavigationToolbar2Tk(
+            canvas_visualize, toolbar_frame3)
         toolbar_frame3.grid(row=1, column=1)
-        toolbarVisualize.update()
+        toolbar_visualize.update()
         toolbar_frame3.update()
 
         left_frame.pack(side=tk.LEFT)
@@ -163,7 +166,7 @@ def showData():
 
 
 # Function to open the file explorer
-def openfn():
+def open_file():
     global filepath
     filepath = filedialog.askopenfilename(
         initialdir="/PII/GazePlay", title="Select A File", filetype=(("json files", "*.json"), ("all files", "*.*")))
@@ -200,20 +203,20 @@ label.pack()
 
 
 browseBtn = tk.Button(
-    app, text="Select a .JSON file to start", command=openfn)
+    app, text="Select a .JSON file to start", command=open_file)
 browseBtn.pack(pady=20, padx=20)
 
 btnSubmit = tk.Button(app,
                       text="Show graphs",
-                      command=showData)
+                      command=show_data)
 btnSubmit.pack(pady=10, padx=10)
 
 
 # To destroy the application and make the script stop running
-def quit():
+def quit_app():
     app.destroy()
 
 
-app.protocol("WM_DELETE_WINDOW", quit)
+app.protocol("WM_DELETE_WINDOW", quit_app)
 
 app.mainloop()
